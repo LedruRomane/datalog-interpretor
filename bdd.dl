@@ -1,9 +1,0 @@
-Actor(344759,Douglas’,‘Fowley’).
-Casts(344759,29851).
-Casts(355713,29000).
-Movie(7909,‘A Night in Armour’,1910).
-Movie(29000,‘Arizona’,1940).
-Movie(29445,‘Ave Maria’,1940).
-Q1(y):- Movie(x,y,1940).
-Q2(f,i):- Actor(z,f,i),Casts(z,x),Movie(x,y,1940).
-Q3(f,i):- Actor(z,f,i),Casts(z,x1),Movie(x1,y,1940),Casts(z,x2),Movie(x2,y,1910).

@@ -8,13 +8,13 @@ Projet développé par LEDRU Romane P2105081
 
 1. Dans le répertoire /Prog vous y trouverez les fichiers .py du programme ainsi que le main, ouvrez un terminal à cet emplacement afin de lancez celui-ci.
 2. Le programme demande un fichier datalog en entrée. Les fichiers de tests se trouvent dans ./tests
-3. Pour tester le programme il vous faudra lancer une commande du type : 
+3. Pour tester le programme il vous faudra lancer cette commande : 
 
 ```bash 
-python3 main.py -i tests/NomduFichier.dl
+python3 main.py -f tests/NomduFichier.dl
 ```
 
-L'extention .dl des fichiers correspond à un fichier datalog. 
+L'extention .dl des fichiers correspond à un fichier datalog.
 
 ---
 
@@ -27,25 +27,45 @@ L'extention .dl des fichiers correspond à un fichier datalog.
 >
 > 2 - Deux parties distinctes du fichier doivent être présente : 
 >
->       Les EDB listés, terminant par un point.
+>       Les EDB listés.
 > 
->       Les IDB listés terminant par un point, avec :- dans sa définition.
+>       Les IDB listés (Q1, Q2, etc) et stratifiés (ordonnancement correct), avec :- dans sa définition.
 >
 > 3 - Les prédicats commencent tous par une majuscule et sont séparés d'une virgule seulement.
+
+Structure imposée: 
+
+- Pas de not.
+
+Pour les fonction d'aggregation on ajoutera dans les IDB des prédicats avec (x, y) dont le x est l'indice utilisé dans la fonction et le y le nom de la fonction contenant les valeurs retournées.
+
+Fonction d'aggregations disponibles :  
+- count(x, Count)
+- min(x, Min)
+- max(x, Max)
+- sum(x, Sum)
+- avg(x, Avg)
+
+On laissera le soin à l'utilisateur de créer un datalog **correct** avec les contraintes ci-dessus.
+
+Différents fichiers dans le dossier test ont été préparés afin de tester le programme dans différentes configuration, libre au correcteur de les utiliser pour visualiser rapidement l'execution.
+
 
 ### 2- Parsing : 
 
 **parse_input_file.py** permet de prendre en entrée le fichier et itérer sur chacune de ses lignes afin d'en extraire les EDB d'un côté, et les IDB split avec la Head et le Body de l'autre.
 
-C'est grâce à nos règles imposées plus haut qu'il nous est aisé de split correctement les EDB (leur nom et leur contenu) et les IDB (leur head et leur body).
+J'ai choisi de parser en objet EDB, IDB contenant des Predicats.
+Les paramètres sont eux parsés en string ou number.
+On pourra voir les structures dans les différents fichiers Idb.py, Edb.py, Predicate.py et l'import et le parser (-> number & string) dans Tools.py.
 
-Il retourne donc un tableau contenant un tableau d'EDB et un tableau d'IDB. 
+> Note : Au lancement du programme, on verra dans la console le print du contenu parsé des EBD, IDB et Predicats.
 
 ---
 
 
 ## Partie 2 : Evaluation
 
-On va donner à un programme d'évaluation notre tableau retourné par parse_input_file afin de retourner le resultat dans un fichier. 
+Création du moteur d'evaluation pour notre datalog.
 
-Pour ce faire on va créer un fichier **evaluation_progam.py** qui prendra en entrée les données retournées de notre parser.
+Pour ce faire on va créer un fichier **evaluation_progam.py** qui prendra en entrée les données retournées de notre parser, et qui évaluera les IDB et retournera les réponses.
