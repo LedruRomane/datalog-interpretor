@@ -8,6 +8,13 @@ Casts(341002,7909)
 Movie(7909,A Night in Armour,1910)
 Movie(29000,Arizona,1940)
 Movie(29445,Ave Maria,1940)
-Q1(y):- Movie(_,y,1940)
-Q2(f,i):- Actor(z,f,i),Casts(z,x),Movie(x,_,1940)
-Q3(f,i):- Actor(z,f,i),Casts(z,x1),Movie(x1,_,1940),Casts(z,x2),Movie(x2,_,1910)
+
+
+Q1(Y):- Movie(_,Y,1940)
+
+
+Q2(F,I):- Actor(Z,F,I),Casts(Z,X),Movie(X,_,1940)
+
+% Commentaire
+
+Q3(F,I):- Actor(Z,F,I),Casts(Z,X1),Movie(X1,_,1940),Casts(Z,X2),Movie(X2,_,1910).

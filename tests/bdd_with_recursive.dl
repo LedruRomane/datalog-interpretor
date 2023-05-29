@@ -1,0 +1,14 @@
+% Extensional Database (EDB) facts
+Parent('Alice', 'Bob').
+Parent('Bob', 'Charlie').
+Parent('Charlie', 'Dave').
+Parent('Dave', 'Eve').
+
+% IDB Rule 1
+Ancestor(X, Y) :- Parent(X, Y).
+
+% IDB Rule 2
+Ancestor(X, Y) :- Parent(X, Z), Ancestor(Z, Y).
+
+
+HasChild(X) :- Parent(X, _).
