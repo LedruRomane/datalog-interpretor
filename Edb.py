@@ -13,6 +13,9 @@ class EDB:
     
     def getNumParams(self):
         return len(self.params)
+    
+    def getParams(self):
+        return self.params
 
     # Affichage
     def print(self):

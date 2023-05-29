@@ -29,7 +29,7 @@ L'extention .dl des fichiers correspond à un fichier datalog.
 >
 >       Les EDB listés.
 > 
->       Les IDB listés (Q1, Q2, etc) et stratifiés (ordonnancement correct), avec :- dans sa définition.
+>       Les IDB listés (Q1, Q2, etc) et stratifiés (ordonnancement correct), avec :- dans leur définition.
 >
 > 3 - Les prédicats commencent tous par une majuscule et sont séparés d'une virgule seulement.
 
@@ -69,3 +69,10 @@ On pourra voir les structures dans les différents fichiers Idb.py, Edb.py, Pred
 Création du moteur d'evaluation pour notre datalog.
 
 Pour ce faire on va créer un fichier **evaluation_progam.py** qui prendra en entrée les données retournées de notre parser, et qui évaluera les IDB et retournera les réponses.
+
+**Point technique n°1** : Pour gérer les données, on parsera de nouveau les données dans un Dataframe.
+
+
+-Avantages- : On aura pas à gérer de façon "sale" les jointures, et on gardera une certaine optimisation niveau mémoire.
+
+-Inconvénients- : On rajoute une librairie sur le projet, ce qui implique une installation supplémentaire pour l'utilisateur.
