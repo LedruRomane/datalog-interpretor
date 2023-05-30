@@ -10,7 +10,7 @@ class Predicate:
     def getTitle(self):
         return self.predicate
 
-    def filter(self, df):
+    def eval(self, df):
         return False
 
     def print(self):
@@ -22,12 +22,67 @@ class AggregationPredicate(Predicate): # count, sum, avg, min, max.
     def __init__(self, predicate, params=[]):
         super().__init__(predicate, params)
 
+    def parseColumn(self, df, head_variables=[]):
+        columnGroup = self.params[:-2]
+        column = self.params[-2]
+        outputColumn = self.params[-1]
+
+        column = column if (column in head_variables) else f"#{column}#"
+        outputColumn = outputColumn if (outputColumn in head_variables) else f"#{outputColumn}#"
+        for i, param in enumerate(columnGroup):
+            columnGroup[i] = param if (param in head_variables) else f"#{param}#"
+
+        return columnGroup, column, outputColumn
+
+    def eval(self, df, head_variables=[]):
+        resultDf = df.copy()
+
+        columnGroup, column, outputColumn = self.parseColumn(resultDf, head_variables)
+        
+        # TODO: Verify behaviour of the following predicates
+        if self.predicate == 'Count':
+            # Count the number of rows in the dataframe
+            resultDf = self.evalPredicate(resultDf, len, columnGroup, column, outputColumn)
+        elif self.predicate == 'Min':
+            # Get the single minimum value for Column variable, ignoring nulls
+            resultDf = self.evalPredicate(resultDf, pd.DataFrame.min, columnGroup, column, outputColumn)
+        elif self.predicate == 'Max':
+            # Get the single maximum value for Column variable, ignoring nulls
+            resultDf = self.evalPredicate(resultDf, pd.DataFrame.max, columnGroup, column, outputColumn)
+        elif self.predicate == 'Sum':
+            # Get the sum of the values for Column variable, ignoring nulls
+            resultDf = self.evalPredicate(resultDf, pd.DataFrame.sum, columnGroup, column, outputColumn)
+        elif self.predicate == 'Avg':
+            # Get the average of the values for Column variable, ignoring nulls without groupby
+            resultDf = self.evalPredicate(resultDf, pd.DataFrame.mean, columnGroup, column, outputColumn)
+
+        return resultDf
+    
+    def evalPredicate(self, df, function, columnGroup, column, outputColumn):
+        if (len(columnGroup) > 0):
+            evalDf = df.groupby(columnGroup)[column].apply(function).reset_index(name=outputColumn)
+            df = pd.merge(df, evalDf, on=columnGroup, how='left')
+        else:
+            if (function == len):
+                # Count the number of rows in the dataframe
+                evalDf = df[column].apply(function)
+            elif (function == pd.DataFrame.min):
+                evalDf = df[column].min()
+            elif (function == pd.DataFrame.max):
+                evalDf = df[column].max()
+            elif (function == pd.DataFrame.sum):
+                evalDf = df[column].sum()
+            elif (function == pd.DataFrame.mean):
+                evalDf = df[column].mean()
+
+            df = df.assign(**{outputColumn: evalDf})
+        return df
 
 class ComparisonPredicate(Predicate): # >=, >, <=, <, =\=, =:= .
     def __init__(self, predicate, params=[]):
         super().__init__(predicate, params)
 
-    def filter(self, df):
+    def eval(self, df):
         resultDf = df.copy()
         isStatic = False
         rotated = False
@@ -116,7 +171,7 @@ class AtomicPredicate(Predicate): # edb like, etc.
     def __init__(self, predicate, params=[]):
         super().__init__(predicate, params)
     
-    def filter(self, df, head_variables=[]):
+    def eval(self, df, head_variables=[]):
         resultDf = df.copy()
         resultDf.columns = [f"#{str(param).strip()}#" if str(param).strip() not in head_variables else f"{str(param).strip()}" for i, param in enumerate(self.params)]
 

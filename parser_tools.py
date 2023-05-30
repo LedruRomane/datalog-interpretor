@@ -45,6 +45,21 @@ def parse_input_file(file_path):
                 params = parts[1:][:-1]
                 predicates = []
 
+
+                # Parsing Aggregate predicates (Sum(E1) for exemple).
+                predicateAggregateArray = re.findall(r'(?:(?:Count|Min|Max|Sum|Avg)\(.+?\))', body[0])
+                predicatesAggregate = [predicate for predicate in predicateAggregateArray if predicate != '']
+                for i in range(len(predicatesAggregate)):
+                    predicatesAggregate[i] = predicatesAggregate[i].strip()
+                    p = re.split(r'\s*\(\s*|\s*,\s*|\s*\)\s*', predicatesAggregate[i])
+                    nameP = p[0]
+                    paramsP = p[1:][:-1]
+                    parse_array(paramsP)
+                    predicatesAggregate[i] = Predicate.AggregationPredicate(nameP, paramsP)
+                    # Delete from body[0] for atomic predicates.
+                    body[0] = body[0].replace(predicateAggregateArray[i], '')
+                predicates.extend(predicatesAggregate)
+
                 # Parsing Atomic Predicates (EDB like).
                 predicateAtomicArray = re.findall(r'(\w+?\(.+?\)),?', body[0])
                 predicatesAtomic = [predicate for predicate in predicateAtomicArray if predicate != '']
@@ -59,18 +74,15 @@ def parse_input_file(file_path):
 
                 
                 # Parsing Comparison predicates (E1 > E2 for exemple).
-                predicateComparisonArray = re.findall(r'(["\']{0,1}(?:[a-zA-Z]\w+|[+-]?(?:[0-9]*[.])?[0-9]+)["\']{0,1}\s*(?:<|=<|>|>=|==|=:=|=\\=)\s*["\']{0,1}(?:[a-zA-Z]\w+|[+-]?(?:[0-9]*[.])?[0-9]+)["\']{0,1}),?', body[0])
+                predicateComparisonArray = re.findall(r'(["\']{0,1}(?:[a-zA-Z]\w{0,}|[+-]?(?:[0-9]*[.])?[0-9]+)["\']{0,1}\s*(?:<|=<|>|>=|==|=:=|=\\=)\s*["\']{0,1}(?:[a-zA-Z]\w{0,}|[+-]?(?:[0-9]*[.])?[0-9]+)["\']{0,1}),?', body[0])
                 predicatesComparison = [predicate for predicate in predicateComparisonArray if predicate != '']
                 for i in range(len(predicatesComparison)):
                     predicatesComparison[i] = predicatesComparison[i].strip()
-                    p = re.split(r'(["\']{0,1}(?:[a-zA-Z]\w+|[+-]?(?:[0-9]*[.])?[0-9]+)["\']{0,1})\s*(<|=<|>|>=|==|=:=|=\\=)\s*(["\']{0,1}(?:[a-zA-Z]\w+|[+-]?(?:[0-9]*[.])?[0-9]+)["\']{0,1})', predicatesComparison[i])
+                    p = re.split(r'(["\']{0,1}(?:[a-zA-Z]\w{0,}|[+-]?(?:[0-9]*[.])?[0-9]+)["\']{0,1})\s*(<|=<|>|>=|==|=:=|=\\=)\s*(["\']{0,1}(?:[a-zA-Z]\w{0,}|[+-]?(?:[0-9]*[.])?[0-9]+)["\']{0,1})', predicatesComparison[i])
                     p = [x for x in p if x != '']
                     parse_array(p)
                     predicatesComparison[i] = Predicate.ComparisonPredicate(p[1], p)
                 predicates.extend(predicatesComparison)
-
-                # Parsing Aggregate predicates (sum(E1) for exemple).
-
 
 
                 idb_rules.append(Idb.IDB(nameIDB, params, predicates))

@@ -9,7 +9,7 @@ Character(5, 'Lynel', 88, 322)
 % Item(id, name, attack, health)
 
 Item(301, 'Master Sword', 100, 0)
-Item(302, 'Hylian Shield', 0, 100)
+Item(302, 'Hylian Shield', 5, 100)
 Item(303, 'Bow of light', 999, 0)
 Item(304, 'Axe', 33, 0)
 Item(305, 'Stick', 20, 0)
@@ -35,10 +35,15 @@ Fight(204, 3, 1, 3)
 
 % Number of items per character
 
-CountItems(Y, COUNT) :- Character(X, Y, _, _), CharacterItem(X, Z), Item(Z, _, _, _), Count(Z, COUNT).
+TotalItemsAttack(Y, TotalAttack) :- Character(X, Y, _, _), CharacterItem(X, Z), Item(Z, _, A, _), Sum(Y, A, TotalAttack).
 
-MinAttack(Y, MIN) :- Character(X, Y, Z, _), Min(Z, MIN).
+CountItems(Y, COUNT) :- Character(X, Y, _, _), CharacterItem(X, Z), Item(Z, _, _, _), Count(X, Z, COUNT).
 
-MaxDefence(Y, MAX) :- Character(X, Y, _, Z), Max(Z, MAX).
+MinAttack(MIN) :- Character(X, Y, Z, _), Min(Z, MIN).
 
-AverageAttack(V, AVG) :- Character(X, Y, Z, _), Avg(Z, AVG).
+% Same attack as TotalItemsAttack
+SumAttackItemAttack(N, SUM) :- CharacterItem(X, Y), Item(Y, _, Z, _), Character(X, N, _, _), Sum(N, Z, SUM).
+
+AverageAttack(AVG) :- Character(X, Y, Z, _), Avg(Z, AVG).
+
+MaxDefence(X, Y, MAX) :- Character(X, Y, _, Z), Max(Z, MAX), Z =:= MAX. 
