@@ -126,3 +126,41 @@ def parse_edb_dataframe(edb_facts):
         dfs[edb] = pd.DataFrame(values, columns=columns)
 
     return dfs # Return dict of dataframe with tables built.
+
+def create_fact(name, head, row):
+    data = []
+    for key in head:
+        l = row[key]
+        # is Int or String
+        if type(l) is str:
+            # If already in quotes, do not add quotes
+            if not (re.match(r'^[\"\'].*[\"\']$', l)):
+                data.append(f"'{row[key]}'")
+            else:
+                data.append(str(row[key]))
+        else:
+            data.append(str(row[key]))
+    return f"{name}({', '.join(data)})"
+
+def parse_to_output(edb_rules, idb_rules, evaluatedFacts):
+    output = ""
+
+    # Print EDB
+    output += "\n% EDB Rules\n"
+    for rule in edb_rules:
+        output += str(rule) + "\n"
+
+    # Print IDB
+    output += "\n% IDB Rules\n"
+    for rule in idb_rules:
+        output += str(rule) + "\n"
+    output += "\n"
+    # Print evaluated facts
+    output += "\n% Evaluated Facts\n"
+    for idbName, idb in evaluatedFacts.items():
+        output += f"% {idbName}\n"
+        for row in idb['rows']:
+            output += create_fact(idbName, idb['head'], row) + "\n"
+        output += "\n"
+
+    return output

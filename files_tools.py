@@ -13,6 +13,6 @@ def importFile():
 
     return args.file
 
-def exportFile():
-    #todo: export file.
-    return True
+def exportFile(path, content):
+    with open(path, 'w') as file:
+        file.write(content)

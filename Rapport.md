@@ -40,11 +40,11 @@ Structure imposée:
 Pour les fonction d'aggregation on ajoutera dans les IDB des prédicats avec (x, y) dont le x est l'indice utilisé dans la fonction et le y le nom de la fonction contenant les valeurs retournées.
 
 Fonction d'aggregations disponibles :  
-- count(x, Count)
-- min(x, Min)
-- max(x, Max)
-- sum(x, Sum)
-- avg(x, Avg)
+- Count(x, Count)
+- Min(x, Min)
+- Max(x, Max)
+- Sum(x, Sum)
+- Avg(x, Avg)
 
 
 Fonctions de comparaisons disponibles : 

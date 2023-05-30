@@ -6,6 +6,9 @@ class EDB:
         self.edb = edb
         self.params = params
 
+    def __str__(self):
+        return str(self.edb + "(" + ", ".join(map(str, self.params)) + ")")
+
     # Accessors
     def getEDBName(self):
         return self.edb

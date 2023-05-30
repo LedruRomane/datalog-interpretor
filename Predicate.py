@@ -7,6 +7,9 @@ class Predicate:
         self.predicate = predicate
         self.params = params
 
+    def __str__(self):
+        return str(self.predicate + "(" + ", ".join(map(str, self.params)) + ")")
+
     def getTitle(self):
         return self.predicate
 
@@ -81,6 +84,9 @@ class AggregationPredicate(Predicate): # count, sum, avg, min, max.
 class ComparisonPredicate(Predicate): # >=, >, <=, <, =\=, =:= .
     def __init__(self, predicate, params=[]):
         super().__init__(predicate, params)
+
+    def __str__(self):
+        return f"{self.params[0]} {self.predicate} {self.params[2]}"
 
     def eval(self, df):
         resultDf = df.copy()

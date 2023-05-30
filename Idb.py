@@ -9,6 +9,9 @@ class IDB:
         self.paramsHead = paramsHead
         self.body = body
 
+    def __str__(self):
+        return str(self.idb + "(" + ", ".join(self.paramsHead) + ") :- " + ", ".join(map(str, self.body)))
+
     # Acessors
     def getIDBName(self):
         return self.idb

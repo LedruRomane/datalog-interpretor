@@ -1,5 +1,5 @@
 import re
-from parser_tools import parse_edb_dataframe
+from parser_tools import parse_edb_dataframe, create_fact
 import Predicate
 import pandas as pd
 
@@ -143,21 +143,6 @@ def filterTable(df, tokens): # This is definitely not the best way to do this
         # rename column
         df = df.rename(columns={columns[0]: token})
     return df
-
-def create_fact(name, head, row):
-    data = []
-    for key in head:
-        l = row[key]
-        # is Int or String
-        if type(l) is str:
-            # If already in quotes, do not add quotes
-            if not (re.match(r'^[\"\'].*[\"\']$', l)):
-                data.append(f"'{row[key]}'")
-            else:
-                data.append(str(row[key]))
-        else:
-            data.append(str(row[key]))
-    return f"{name}({', '.join(data)})"
 
 def print_evaluator(rules):
     print("\n----- Evaluation program ------\n")

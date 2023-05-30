@@ -1,8 +1,8 @@
 import sys
 import Edb
 import Idb
-from parser_tools import parse_input_file
-from files_tools import importFile
+from parser_tools import parse_input_file, parse_to_output
+from files_tools import importFile, exportFile
 import evaluation_program
 
 def main():
@@ -19,8 +19,10 @@ def main():
         Idb.IDB.print(rule)
 
     # Evaluate
-    evaluation_program.evaluate(edb_facts, idb_rules)
+    evalFact = evaluation_program.evaluate(edb_facts, idb_rules)
 
     #todo: load results into a file
+    output = parse_to_output(edb_facts, idb_rules, evalFact)
+    exportFile("output.txt", output)
 
 main()
