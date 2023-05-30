@@ -1,18 +1,19 @@
 import Predicate
 
 class IDB:
-    # idb: string (nom de la relation)
-    # paramsHead: list (liste des paramètres de la tête)
-    # body: list of Predicate (liste des prédicats présents dans le corps)
+    # idb: string (relation's name)
+    # paramsHead: list (head's parameters)
+    # body: list of Predicate (body's content)
     def __init__(self, idb="", paramsHead=[], body=[]):
         self.idb = idb
         self.paramsHead = paramsHead
         self.body = body
 
+    # Acessors
     def getIDBName(self):
         return self.idb
 
-    # Affichage
+    # Print into console.
     def print(self):
         print( "\n------", self.idb ,"--------")
         print( "\nIDB Content Head : ", self.paramsHead)

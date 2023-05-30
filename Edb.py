@@ -1,13 +1,12 @@
 class EDB:
-    # edb: string (nom de la relation)
-    # params: list (liste des données du tuple)
+    # edb: string (relation's name)
+    # params: list (tuple's data list)
     #
     def __init__(self, edb="", params=[]):
         self.edb = edb
         self.params = params
 
-
-    # Assesseurs
+    # Accessors
     def getEDBName(self):
         return self.edb
     
@@ -17,7 +16,7 @@ class EDB:
     def getParams(self):
         return self.params
 
-    # Affichage
+    # Console print
     def print(self):
         print( "EDB name : ", self.edb, "\nEDB contents : ", self.params, "\n--------")
 

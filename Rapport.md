@@ -31,7 +31,7 @@ L'extention .dl des fichiers correspond à un fichier datalog.
 > 
 >       Les IDB listés (Q1, Q2, etc) et stratifiés (ordonnancement correct), avec :- dans leur définition.
 >
-> 3 - Les prédicats commencent tous par une majuscule et sont séparés d'une virgule seulement.
+> 3 - Les prédicats commencent tous par une majuscule et sont séparés d'une virgule seulement. Les variables sont elles en majuscules pour ne pas confondre avec une véritable valeur statique.
 
 Structure imposée: 
 
@@ -46,6 +46,15 @@ Fonction d'aggregations disponibles :
 - sum(x, Sum)
 - avg(x, Avg)
 
+
+Fonctions de comparaisons disponibles : 
+- E1 < E2
+- E1 =< E2
+- E1 > E2
+- E1 >= E2
+- E1 =:= E2
+
+
 On laissera le soin à l'utilisateur de créer un datalog **correct** avec les contraintes ci-dessus.
 
 Différents fichiers dans le dossier test ont été préparés afin de tester le programme dans différentes configuration, libre au correcteur de les utiliser pour visualiser rapidement l'execution.
@@ -59,7 +68,7 @@ J'ai choisi de parser en objet EDB, IDB contenant des Predicats.
 Les paramètres sont eux parsés en string ou number.
 On pourra voir les structures dans les différents fichiers Idb.py, Edb.py, Predicate.py et l'import et le parser (-> number & string) dans Tools.py.
 
-> Note : Au lancement du programme, on verra dans la console le print du contenu parsé des EBD, IDB et Predicats.
+> Note : Par soucis de visualisation, au lancement du programme, on verra dans la console le print du contenu parsé des EBD, IDB et Predicats.
 
 ---
 
@@ -70,9 +79,11 @@ Création du moteur d'evaluation pour notre datalog.
 
 Pour ce faire on va créer un fichier **evaluation_progam.py** qui prendra en entrée les données retournées de notre parser, et qui évaluera les IDB et retournera les réponses.
 
-**Point technique n°1** : Pour gérer les données, on parsera de nouveau les données dans un Dataframe.
+>**Point technique n°1** : Pour gérer les données, on parsera de nouveau les données dans un Dataframe.
 
 
 -Avantages- : On aura pas à gérer de façon "sale" les jointures, et on gardera une certaine optimisation niveau mémoire.
 
 -Inconvénients- : On rajoute une librairie sur le projet, ce qui implique une installation supplémentaire pour l'utilisateur.
+
+>**Point technique n°2** : On sait que dans un datalog on a parfois des IDB recursifs tel que : ancestor(X,Y) :- parent.., ancestor(..). Pour gérer ce cas de figure, on introduit une variable state qui va comparer state-1 à state pour y vérifier des différences, et en fonction sortir de la boucle ou non. 

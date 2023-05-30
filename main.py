@@ -1,25 +1,26 @@
 import sys
 import Edb
 import Idb
-from parse_input_file import parse_input_file
-from Tools import importFile
+from parser_tools import parse_input_file
+from files_tools import importFile
 import evaluation_program
 
-# Main program pour notre Evaluateur de Datalog
 def main():
     file = importFile()
     edb_facts, idb_rules = parse_input_file(file)
 
-    # Afficher les relations EDB
+    # Print into console EDB parsed.
     print ("\n----------------- EDB -------------------")
     for tuple in edb_facts:
         Edb.EDB.print(tuple)
-    # Afficher les règles IDB
+    # Print into console IDB parsed.
     print ("\n----------------- IDB -------------------")
     for rule in idb_rules:
         Idb.IDB.print(rule)
 
-    # Évaluation
+    # Evaluate
     evaluation_program.evaluate(edb_facts, idb_rules)
+
+    #todo: load results into a file
 
 main()
