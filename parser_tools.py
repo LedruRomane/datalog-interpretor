@@ -59,11 +59,11 @@ def parse_input_file(file_path):
 
                 
                 # Parsing Comparison predicates (E1 > E2 for exemple).
-                predicateComparisonArray = re.findall(r'(\w+\s*(?:<|=<|>|>=|==|=:=)\s*\w+),?', body[0])
+                predicateComparisonArray = re.findall(r'(["\']{0,1}(?:[a-zA-Z]\w+|[+-]?(?:[0-9]*[.])?[0-9]+)["\']{0,1}\s*(?:<|=<|>|>=|==|=:=|=\\=)\s*["\']{0,1}(?:[a-zA-Z]\w+|[+-]?(?:[0-9]*[.])?[0-9]+)["\']{0,1}),?', body[0])
                 predicatesComparison = [predicate for predicate in predicateComparisonArray if predicate != '']
                 for i in range(len(predicatesComparison)):
                     predicatesComparison[i] = predicatesComparison[i].strip()
-                    p = re.split(r'(\w+)\s*(<|=<|>|>=|==|=:=)\s*(\w+)', predicatesComparison[i])
+                    p = re.split(r'(["\']{0,1}(?:[a-zA-Z]\w+|[+-]?(?:[0-9]*[.])?[0-9]+)["\']{0,1})\s*(<|=<|>|>=|==|=:=|=\\=)\s*(["\']{0,1}(?:[a-zA-Z]\w+|[+-]?(?:[0-9]*[.])?[0-9]+)["\']{0,1})', predicatesComparison[i])
                     p = [x for x in p if x != '']
                     parse_array(p)
                     predicatesComparison[i] = Predicate.ComparisonPredicate(p[1], p)

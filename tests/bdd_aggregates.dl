@@ -1,0 +1,44 @@
+% Character(id, name, attack, health)
+
+Character(1, 'Ganondorf', 129, 208)
+Character(2, 'Link', 112, 133)
+Character(3, 'Zelda', 98, 182)
+Character(4, 'Bokoblin', 15, 43)
+Character(5, 'Lynel', 88, 322)
+
+% Item(id, name, attack, health)
+
+Item(301, 'Master Sword', 100, 0)
+Item(302, 'Hylian Shield', 0, 100)
+Item(303, 'Bow of light', 999, 0)
+Item(304, 'Axe', 33, 0)
+Item(305, 'Stick', 20, 0)
+Item(306, 'Lynel Massue', 140, 50)
+Item(307, 'Majora's Mask', 0, 999)
+
+% CharacterItem(character_id, item_id)
+
+CharacterItem(2, 301)
+CharacterItem(2, 302)
+CharacterItem(5, 306)
+CharacterItem(4, 305)
+CharacterItem(3, 303)
+
+% Fight(id, character_id, enemy_id, winner_id)
+
+Fight(201, 2, 1, 2)
+Fight(202, 2, 4, 2)
+Fight(203, 2, 5, 5)
+Fight(204, 3, 1, 3)
+
+% IDB
+
+% Number of items per character
+
+CountItems(Y, COUNT) :- Character(X, Y, _, _), CharacterItem(X, Z), Item(Z, _, _, _), Count(Z, COUNT).
+
+MinAttack(Y, MIN) :- Character(X, Y, Z, _), Min(Z, MIN).
+
+MaxDefence(Y, MAX) :- Character(X, Y, _, Z), Max(Z, MAX).
+
+AverageAttack(V, AVG) :- Character(X, Y, Z, _), Avg(Z, AVG).

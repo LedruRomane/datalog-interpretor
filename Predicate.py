@@ -1,5 +1,7 @@
 import re
 
+import pandas as pd
+
 class Predicate:
     def __init__(self, predicate, params=[]):
         self.predicate = predicate
@@ -16,15 +18,99 @@ class Predicate:
 
 # Todo : Ajouter les classes qui héritent de Predicate pour les prédicats avec agrégation 
 # et les prédicats de comparaison.
-class AggregationPredicate(Predicate): # count, sum, avg, etc.
+class AggregationPredicate(Predicate): # count, sum, avg, min, max.
     def __init__(self, predicate, params=[]):
         super().__init__(predicate, params)
 
 
-class ComparisonPredicate(Predicate): # > < \= etc.
+class ComparisonPredicate(Predicate): # >=, >, <=, <, =\=, =:= .
     def __init__(self, predicate, params=[]):
         super().__init__(predicate, params)
 
+    def filter(self, df):
+        resultDf = df.copy()
+        isStatic = False
+        rotated = False
+        Val1, Val2 = self.params[0], self.params[2]
+        predicate = self.predicate
+        if (self.isStatic(Val1) | self.isStatic(Val2)):
+            isStatic = True
+        if (self.isStatic(Val1)):
+            rotated = True
+            Val1, Val2 = Val2, Val1
+        Column1 = Val1
+        Column2 = Val2
+
+        Column1 = Val1 if (Val1 in resultDf.columns) else f"#{Val1}#"
+        if not (isStatic):
+            Column2 = Val2 if (Val2 in resultDf.columns) else f"#{Val2}#"
+
+        # if rotated
+        if (rotated):
+            if (predicate == "<"):
+                predicate = ">"
+            elif (predicate == ">"):
+                predicate = "<"
+            elif (predicate == "=<"):
+                predicate = ">="
+            elif (predicate == ">="):
+                predicate = "=<"
+
+        if (predicate == "=:="):
+            if (isStatic):
+                # filter the dataframe columns that match with the static variable
+                resultDf = resultDf[resultDf[Column1] == Column2]
+            else:
+                # filter the dataframe columns that match with the variable
+                resultDf = resultDf[resultDf[Column1] == resultDf[Column2]]
+
+        elif (predicate == "=\="):
+            if (isStatic):
+                resultDf = resultDf[resultDf[Column1] != Column2]
+            else:
+                resultDf = resultDf[resultDf[Column1] != resultDf[Column2]]
+
+        else:
+            resultDf = self.filterNumeric(resultDf, predicate, Column1, Column2, isStatic)
+
+        return resultDf
+    
+    def filterNumeric(self, df, predicate, column1, column2, isStatic = False):
+        # Making sure that column are either int or float
+        df[column1] = pd.to_numeric(df[column1], errors='coerce')
+        if (isStatic):
+            column2 = float(column2)
+        else:
+            df[column2] = pd.to_numeric(df[column2], errors='coerce')
+
+        if (predicate == "<"):
+            if (isStatic):
+                df = df[df[column1] < column2]
+            else:
+                df = df[df[column1] < df[column2]]
+
+        if (predicate == ">"):
+            if (isStatic):
+                df = df[df[column1] > column2]
+            else:
+                df = df[df[column1] > df[column2]]
+
+        if (predicate == "=<"):
+            if (isStatic):
+                df = df[df[column1] <= column2]
+            else:
+                df = df[df[column1] <= df[column2]]
+
+        if (predicate == ">="):
+            if (isStatic):
+                df = df[df[column1] >= column2]
+            else:
+                df = df[df[column1] >= df[column2]]
+
+        return df
+    
+    def isStatic(self, variable):
+        return not not (re.match(r"^(?:[\"']\w+[\"']|[0-9.]+)+$", str(variable).strip()))
         
 class AtomicPredicate(Predicate): # edb like, etc.
     def __init__(self, predicate, params=[]):

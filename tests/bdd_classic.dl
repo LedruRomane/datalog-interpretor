@@ -10,7 +10,7 @@ Movie(29000,Arizona,1940)
 Movie(29445,Ave Maria,1940)
 
 
-Q1(Y):- Movie(_,Y,1940)
+% Q1(Y):- Movie(_,Y,1940)
 
 
 Q2(F,I):- Actor(Z,F,I),Casts(Z,X),Movie(X,_,1940)

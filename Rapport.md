@@ -52,8 +52,8 @@ Fonctions de comparaisons disponibles :
 - E1 =< E2
 - E1 > E2
 - E1 >= E2
-- E1 =:= E2
-
+- E1 =:= E2 (valeur de E1 =  valeur de E2, une autre façon de faire une comparaison d'égalité stricte mais en l'explicitant) 
+- E1 =\= (valeur de E1 != valeur de E2)
 
 On laissera le soin à l'utilisateur de créer un datalog **correct** avec les contraintes ci-dessus.
 
@@ -78,7 +78,7 @@ On pourra voir les structures dans les différents fichiers Idb.py, Edb.py, Pred
 Création du moteur d'evaluation pour notre datalog.
 
 Pour ce faire on va créer un fichier **evaluation_progam.py** qui prendra en entrée les données retournées de notre parser, et qui évaluera les IDB et retournera les réponses.
-
+### Le dataframe : 
 >**Point technique n°1** : Pour gérer les données, on parsera de nouveau les données dans un Dataframe.
 
 
@@ -86,4 +86,35 @@ Pour ce faire on va créer un fichier **evaluation_progam.py** qui prendra en en
 
 -Inconvénients- : On rajoute une librairie sur le projet, ce qui implique une installation supplémentaire pour l'utilisateur.
 
->**Point technique n°2** : On sait que dans un datalog on a parfois des IDB recursifs tel que : ancestor(X,Y) :- parent.., ancestor(..). Pour gérer ce cas de figure, on introduit une variable state qui va comparer state-1 à state pour y vérifier des différences, et en fonction sortir de la boucle ou non. 
+### La récursivité :
+>**Point technique n°2 :** : On sait que dans un datalog on a parfois des IDB recursifs tel que : ancestor(X,Y) :- parent.., ancestor(..). Pour gérer le cas de la récursivité, on évalue d'abord une première fois les IDB, et on les ajoutes à notre dataframe. Tant que la sortie n'appartient pas au dataframe (aka n'existe pas encore déjà), on l'ajoute. Dès que la sortie existe déjà, on arrête la récursivité et on retourne le dataframe. 
+
+### L'évaluation :
+>**Point technique n°3** : On procède en 4 étapes :
+- 1 - Récupération de tous les prédicats atomiques concernés par le body de l'IDB.
+- 2 - On filtre d'abord en amont les valeurs statiques renseignées dans le body et on ne garde que les lignes concernées.
+- 3 - On merge toutes les colonnes avec cross, c'est un merge force qui rends toutes nos combinaisons possibles sans même s'occuper de la jointure.
+- 4 - Puis on s'occupe de la jointure, ça consiste à faire matcher les valeurs des colonnes, appelé token, Z avec Z par exemple (merge_dataframes). Un token est un nom de colonne unique que l'on souhaite filtrer, puis on retire les redondance (filterTable) en loopant sur les tokens pour que les tokens identiques matchent en ayant la même valeur.
+
+### Les fonctions compare : 
+>**Point technique n°4** : Pour les fonctions de comparaisons, on ira créer un Prédicat particulier, que l'on nommera ComparisonPredicate, qui héritera de ce qu'est un predicat de base. 
+Il prendra 3 paramètres, une valeur, un opérateur de comparaison, et une valeur, dans cet ordre.
+L'opérateur de comparaison fonctionnera tel qu'ils sont décrit dans la documentation datalog, ils fonctionneront sur les entier, et seul le =:= et le =\= fonctionnera sur les string. 
+
+Au sein du fichier Predicate.py, on spécifie directement de quel opérateur de comparaison il s'agit afin de le traiter directement à l'étape 4 de l'évaluation.
+
+### Les fonctions d'aggregation :
+>**Point technique n°5** : Pour les fonctions d'aggregation, on ira créer un Prédicat particulier, que l'on nommera AggregationPredicate, qui héritera de ce qu'est un predicat de base.
+
+*Problématique* : Comment, dans le cas où on a une fonction de comparaison sur une aggregation, on ordonnance l'évaluation ? 
+*Solution* : on a décidé d'ordonnancer dans l'ordre qui suit :
+- 1 : les atomes de base,
+- 2 : les comparaisons (colonne/colonne, colonne/valeur, valeur/colonne, valeur/valeur),
+- 3 : les aggregations, 
+- 4 : si la comparaison travaille sur une aggregation, on le fait à la toute fin.
+
+IDB(A, SUM) :- EDB_1(A , _ , _),  --> 1
+                EDB_2(B, _ , B2),  --> 1
+                A =:= B ,         --> 2
+                Sum(B2, SUM),    --> 3
+                SUM > 10.       --> 4
