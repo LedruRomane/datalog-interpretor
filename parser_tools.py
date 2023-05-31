@@ -93,6 +93,8 @@ def parse_array(params):
     for i in range(len(params)):
                     if (re.match(r'^[0-9]+$', params[i])):
                         params[i] = int(params[i])
+                    elif (re.match(r'^[0-9]+\.[0-9]*$', params[i])):
+                        params[i] = float(params[i])
                     else:
                         params[i] = params[i].strip("'")
 
