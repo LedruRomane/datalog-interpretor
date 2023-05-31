@@ -67,8 +67,7 @@ class AggregationPredicate(Predicate): # count, sum, avg, min, max.
             df = pd.merge(df, evalDf, on=columnGroup, how='left')
         else:
             if (function == len):
-                # Count the number of rows in the dataframe
-                evalDf = df[column].apply(function)
+                evalDf = len(df)
             elif (function == pd.DataFrame.min):
                 evalDf = df[column].min()
             elif (function == pd.DataFrame.max):

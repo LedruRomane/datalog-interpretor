@@ -1,0 +1,29 @@
+%% Datalog test suite
+%% This file contains a set of basic test cases for the Datalog interpreter.
+
+% EDB (facts)
+
+Actor(344759,"Douglas","Fowley").
+Actor(355713,"William","Holden").
+Actor(341002,"All","Movie").
+Casts(344759,29851).
+Casts(355713,29000).
+Casts(341002,29000).
+Casts(341002,7909).
+Movie(7909,"A Night in Armour",1910).
+Movie(29000,"Arizona",1940).
+Movie(29445,"Ave Maria",1940).
+
+% IDB
+
+% 1. Find all the movies made in 1940.
+MovieIn1940(Y):- Movie(_,Y,1940).
+
+% 2. Find all Actors from the movie "Arizona".
+ActorsInArizona(F,I):- Actor(Z,F,I),Casts(Z,X),Movie(X,"Arizona",_).
+
+% 3. Find all the actors name who played in a movie made in 1940.
+ActorsIn1940(F,I):- Actor(Z,F,I),Casts(Z,X),Movie(X,_,1940).
+
+% 4. Find all the actors name who played in a movie made in 1940 and in a movie made in 1910.
+ActorsIn1940And1910(F,I):- Actor(Z,F,I),Casts(Z,X1),Movie(X1,_,1940),Casts(Z,X2),Movie(X2,_,1910).

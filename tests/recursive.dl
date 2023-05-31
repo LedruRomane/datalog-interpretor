@@ -1,0 +1,17 @@
+%% Datalog test suite
+%% This file contains a set of test cases with recursive IDB rules for the Datalog interpreter.
+
+% EBD (facts)
+
+Parent('Alice', 'Bob').
+Parent('Bob', 'Charlie').
+Parent('Charlie', 'Dave').
+Parent('Dave', 'Eve').
+
+% IDB
+
+% 1. Base case: X is a parent of Y then X is an ancestor of Y
+Ancestor(X, Y) :- Parent(X, Y).
+
+% 2. Recursive case: X is an ancestor of Y if X is a parent of Z and Z is an ancestor of Y
+Ancestor(X, Y) :- Parent(X, Z), Ancestor(Z, Y).

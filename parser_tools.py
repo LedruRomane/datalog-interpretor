@@ -97,6 +97,7 @@ def parse_array(params):
                         params[i] = float(params[i])
                     else:
                         params[i] = params[i].strip("'")
+                        params[i] = params[i].strip('"')
 
 # cf. Step 1 eval: Parse edb into dataframe.
 def parse_edb_dataframe(edb_facts):

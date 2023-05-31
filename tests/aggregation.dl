@@ -1,0 +1,62 @@
+%% Datalog test suite
+%% This file contains a set of test cases with aggregate predicates for the Datalog interpreter.
+
+% EDB (facts)
+
+% Character(id, name, attack, health)
+Character(1, 'Ganondorf', 129, 208)
+Character(2, 'Link', 112, 133)
+Character(3, 'Zelda', 98, 182)
+Character(4, 'Bokoblin', 15, 43)
+Character(5, 'Lynel', 88, 322)
+
+% Item(id, name, attack, health)
+Item(301, 'Master Sword', 100, 0)
+Item(302, 'Hylian Shield', 5, 100)
+Item(303, 'Bow of light', 999, 0)
+Item(304, 'Axe', 33, 0)
+Item(305, 'Stick', 20, 0)
+Item(306, 'Lynel Massue', 140, 50)
+Item(307, 'Majora's Mask', 0, 999)
+
+% CharacterItem(character_id, item_id)
+CharacterItem(2, 301)
+CharacterItem(2, 302)
+CharacterItem(5, 306)
+CharacterItem(4, 305)
+CharacterItem(3, 303)
+
+% Fight(id, character_id, enemy_id, winner_id)
+Fight(201, 2, 1, 2)
+Fight(202, 2, 4, 2)
+Fight(203, 2, 5, 5)
+Fight(204, 3, 1, 3)
+
+% IDB
+
+% 1. Number of character (function count)
+CountCharacter(COUNT) :- Character(X, _, _, _), Count(X, COUNT).
+
+% 2. Minimum health across character (function min)
+MinHealth(MIN) :- Character(X, _, _, Y), Min(Y, MIN).
+
+% 3. Maximum health across character (function max)
+MaxHealth(MAX) :- Character(X, _, _, Y), Max(Y, MAX).
+
+% 4. Average health across character (function avg)
+AverageHealth(AVG) :- Character(X, _, _, Y), Avg(Y, AVG).
+
+% 5. Number of items per character (groupped count)
+CountItemsPerCharacter(Y, COUNT) :- Character(X, Y, _, _), CharacterItem(X, Z), Item(Z, _, _, _), Count(X, Z, COUNT).
+
+% 6. Minimum Item attack per character (groupped min)
+MinItemAttackPerCharacter(Y, MIN) :- Character(X, Y, _, _), CharacterItem(X, Z), Item(Z, _, A, _), Min(X, A, MIN).
+
+% 7. Maximum Item attack per character (groupped max)
+MaxItemAttackPerCharacter(Y, MAX) :- Character(X, Y, _, _), CharacterItem(X, Z), Item(Z, _, A, _), Max(X, A, MAX).
+
+% 8. Total attack of a character (groupped sum)
+TotalItemAttackPerCharacter(Y, TotalAttack) :- Character(X, Y, _, _), CharacterItem(X, Z), Item(Z, _, A, _), Sum(Y, A, TotalAttack).
+
+% 9. Average Item attack per character (groupped avg)
+AverageItemAttackPerCharacter(Y, AVG) :- Character(X, Y, _, _), CharacterItem(X, Z), Item(Z, _, A, _), Avg(X, A, AVG).

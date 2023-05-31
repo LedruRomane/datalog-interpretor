@@ -53,7 +53,7 @@ Fonctions de comparaisons disponibles :
 - E1 > E2
 - E1 >= E2
 - E1 =:= E2 (valeur de E1 =  valeur de E2, une autre façon de faire une comparaison d'égalité stricte mais en l'explicitant) 
-- E1 =\= (valeur de E1 != valeur de E2)
+- E1 =\= E2 (valeur de E1 != valeur de E2)
 
 On laissera le soin à l'utilisateur de créer un datalog **correct** avec les contraintes ci-dessus.
 

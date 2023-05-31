@@ -1,0 +1,61 @@
+%% Datalog test suite
+%% This file contains a set of test cases with comparison predicates for the Datalog interpreter.
+
+% EDB (facts)
+
+Game("The Legend of Zelda", 1986, 9.0).
+Game("Majora's Mask", 2000, 9.7).
+Game("Skyward Sword", 2011, 9.0).
+Game("Tear of the Kingdom", 2023, 10).
+Game("Ocarina of Time", 1998, 9.3).
+Game("Breath of the Wild", 2017, 9.7).
+Game("A Link to the Past", 1991, 9.1).
+Game("Link's Awakening", 1993, 8.8).
+Game("Twilight Princess", 2006, 9.2).
+Game("Wind Waker", 2002, 9.0).
+Game("Oracle of Ages", 2001, 8.7).
+Game("Oracle of Seasons", 2001, 8.7).
+
+% IDB
+
+% 1. Find all games with a rating under 9.2.
+GameInferior92(GameID, Rating) :- Game(GameID, _, Rating), Rating < 9.2.
+
+% 2. Find all games with a rating less than or equal to 9.2.
+GameLessThanOrEqual92(GameID, Rating) :- Game(GameID, _, Rating), Rating =< 9.2.
+
+% 3. Find all games with a rating greater than 9.2.
+GameGreaterThan92(GameID, Rating) :- Game(GameID, _, Rating), Rating > 9.2.
+
+% 4. Find all games with a rating greater than or equal to 9.2.
+GameGreaterThanOrEqual92(GameID, Rating) :- Game(GameID, _, Rating), Rating >= 9.2.
+
+% 5. Find all games with a rating equal to 9.2.
+GameEqualTo92(GameID, Rating) :- Game(GameID, _, Rating), Rating =:= 9.2.
+
+% 6. Find all games with a rating not equal to 9.2.
+GameNotEqualTo92(GameID, Rating) :- Game(GameID, _, Rating), Rating =\= 9.2.
+
+% 7. Find couple of games where the first game is older than the second.
+OlderGame(Game1, Game2) :- Game(Game1, Year1, _), Game(Game2, Year2, _), Year1 < Year2.
+
+% 9. Find couple of games where the first game is newer than the second.
+NewerGame(Game1, Game2) :- Game(Game1, Year1, _), Game(Game2, Year2, _), Year1 > Year2.
+
+% 11. Find couple of games where the first game is a different age than the second.
+DifferentYearGame(Game1, Game2) :- Game(Game1, Year1, _), Game(Game2, Year2, _), Year1 =\= Year2.
+
+
+% Complex queries
+
+% 13. Find couple of games with the same rating.
+SameRating(Game1, Game2) :- Game(Game1, _, Rating1), Game(Game2, _, Rating2), Rating1 =:= Rating2, Game1 =\= Game2.
+
+% 14. Find couple of games where the first game is the same age as the second.
+SameYearGame(Game1, Game2) :- Game(Game1, Year1, _), Game(Game2, Year2, _), Year1 =:= Year2, Game1 =\= Game2.
+
+% 15. Find couple of games where the first game is newer than or equal to the second.
+NewerOrEqualGame(Game1, Game2) :- Game(Game1, Year1, _), Game(Game2, Year2, _), Year1 >= Year2, Game1 =\= Game2.
+
+% 16. Find couple of games where the first game is older than or equal to the second.
+OlderOrEqualGame(Game1, Game2) :- Game(Game1, Year1, _), Game(Game2, Year2, _), Year1 =< Year2, Game1 =\= Game2.
