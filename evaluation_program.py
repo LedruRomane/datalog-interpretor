@@ -126,7 +126,7 @@ def merge_dataframes(atomPredicateResults):
     
     return df
 
-def filterTable(df, tokens): # This is definitely not the best way to do this
+def filterTable(df, tokens):
     # tokens are tags that column that contains them in their name must have the same value
     
     # Check for duplicates exact tokens in the columns

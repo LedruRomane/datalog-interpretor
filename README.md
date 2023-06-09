@@ -113,8 +113,14 @@ Au sein du fichier Predicate.py, on spécifie directement de quel opérateur de 
 - 3 : les aggregations, 
 - 4 : si la comparaison travaille sur une aggregation, on le fait à la toute fin.
 
-IDB(A, SUM) :- EDB_1(A , _ , _),  --> 1
-                EDB_2(B, _ , B2),  --> 1
-                A =:= B ,         --> 2
-                Sum(B2, SUM),    --> 3
-                SUM > 10.       --> 4
+IDB(A, SUM) :- 
+
+EDB_1(A , _ , _),  --> 1er
+                
+EDB_2(B, _ , B2),  --> 1er
+                
+A =:= B ,         --> 2d
+
+Sum(B2, SUM),    --> 3ème
+
+SUM > 10.       --> 4ème
