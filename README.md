@@ -32,6 +32,8 @@ python3 main.py -f tests/NomduFichier.dl
 
 L'extention .dl des fichiers correspond à un fichier datalog.
 
+NOTE : LA PREMIERE EXECUTION EST GENERALEMENT PLUS LONGUE.
+
 ---
 
 ## Datalog disponibles
