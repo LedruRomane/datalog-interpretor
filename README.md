@@ -22,7 +22,7 @@ $ sudo pip3 install pandas
 ```
 
 
-1. Dans le répertoire /Prog vous y trouverez les fichiers .py du programme ainsi que le **main.py**, ouvrez un terminal à cet emplacement afin de lancez celui-ci.
+1.  Vous trouverez à la racine les fichiers .py du programme ainsi que le **main.py**, ouvrez un terminal à cet emplacement afin de lancez celui-ci.
 2. Le programme demande un fichier datalog en entrée. Les fichiers de tests se trouvent dans **./tests**
 3. Pour tester le programme il vous faudra lancer cette commande : 
 
